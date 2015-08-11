@@ -1,0 +1,36 @@
+{
+  "name": "odie",
+  "version": "0.0.1",
+  "description": "A schemaless ODM for Node and MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R progress tests/unit/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nvite/odie.git"
+  },
+  "keywords": [
+    "ODM",
+    "ORM",
+    "MongoDB"
+  ],
+  "author": "Dan Drinkard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nvite/odie/issues"
+  },
+  "homepage": "https://github.com/nvite/odie#readme",
+  "dependencies": {
+    "collections": "^1.2.3",
+    "deep-diff": "^0.3.2",
+    "flat": "^1.6.0",
+    "mongodb": "^1.4.9",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "async": "^1.4.0",
+    "mocha": "^2.2.5",
+    "should": "^7.0.2"
+  }
+}
