@@ -19,7 +19,7 @@ describe("model", function () {
     // Set up some accessible properties for our default context
     ModelTest.accessible(['foo', 'bar']);
     // And some other properties for a named context
-    ModelTest.accessible('privileged', ModelTest.OBSERVABLE_PROPERTIES.default.concat(['baz']));
+    ModelTest.accessible('privileged', ModelTest.READABLE_PROPERTIES.default.concat(['baz']));
 
     // Add a custom save method to our mock model to test later
     ModelTest.overrides('save', function (_super) {
@@ -760,18 +760,18 @@ describe("model", function () {
         });
       });
 
-      it("filters out unobservable properties when the observer is not privileged", function (done) {
+      it("filters out unreadable properties when the observer is not privileged", function (done) {
         Object.keys(this.subject.format()).sort().should.eql(['_id', 'bar', 'foo']);
         done();
       });
 
-      it("retains unobservable properties when the observer is privileged", function (done) {
+      it("retains unreadable properties when the observer is privileged", function (done) {
         Object.keys(this.subject.format({as: 'privileged'})).sort().should.eql(['_id', 'bar', 'baz', 'foo']);
         done();
       });
 
-      it("returns the whole model when no observables are defined", function (done) {
-        delete(this.model.OBSERVABLE_PROPERTIES);
+      it("returns the whole model when no readables are defined", function (done) {
+        delete(this.model.READABLE_PROPERTIES);
         Object.keys(this.subject.format()).sort().should.eql(['_id', 'bar', 'baz', 'created_at', 'foo', 'updated_at']);
         done();
       });
@@ -1061,24 +1061,24 @@ describe("model", function () {
   });
 
   describe("class methods", function () {
-    describe("observable", function () {
-      it("adds to the class' OBSERVABLE_PROPERTIES", function (done) {
-        this.model.observable('dishwasher');
-        this.model.OBSERVABLE_PROPERTIES.default.indexOf('dishwasher').should.not.eql(-1);
+    describe("readable", function () {
+      it("adds to the class' READABLE_PROPERTIES", function (done) {
+        this.model.readable('dishwasher');
+        this.model.READABLE_PROPERTIES.default.indexOf('dishwasher').should.not.eql(-1);
         done();
       });
 
       it("adds to the right observer context", function (done) {
-        this.model.observable('privileged', 'dishwasher');
-        this.model.OBSERVABLE_PROPERTIES.default.indexOf('dishwasher').should.eql(-1);
-        this.model.OBSERVABLE_PROPERTIES.privileged.indexOf('dishwasher').should.not.eql(-1);
+        this.model.readable('privileged', 'dishwasher');
+        this.model.READABLE_PROPERTIES.default.indexOf('dishwasher').should.eql(-1);
+        this.model.READABLE_PROPERTIES.privileged.indexOf('dishwasher').should.not.eql(-1);
         done();
       });
 
       it("dedupes the property list", function (done) {
-        this.model.observable('dishwasher');
-        this.model.observable('dishwasher');
-        this.model.OBSERVABLE_PROPERTIES.default.filter(function (prop) {
+        this.model.readable('dishwasher');
+        this.model.readable('dishwasher');
+        this.model.READABLE_PROPERTIES.default.filter(function (prop) {
           return prop === 'dishwasher';
         }).length.should.eql(1);
         done();
@@ -1110,18 +1110,18 @@ describe("model", function () {
     });
 
     describe("accessible", function () {
-      it("adds to OBSERVABLE and WRITABLE", function (done) {
+      it("adds to READABLE and WRITABLE", function (done) {
         this.model.accessible('dishwasher');
-        this.model.OBSERVABLE_PROPERTIES.default.indexOf('dishwasher').should.not.eql(-1);
+        this.model.READABLE_PROPERTIES.default.indexOf('dishwasher').should.not.eql(-1);
         this.model.WRITABLE_PROPERTIES.default.indexOf('dishwasher').should.not.eql(-1);
         done();
       });
 
       it("adds to the right observer context", function (done) {
         this.model.accessible('privileged', 'dishwasher');
-        this.model.OBSERVABLE_PROPERTIES.default.indexOf('dishwasher').should.eql(-1);
+        this.model.READABLE_PROPERTIES.default.indexOf('dishwasher').should.eql(-1);
         this.model.WRITABLE_PROPERTIES.default.indexOf('dishwasher').should.eql(-1);
-        this.model.OBSERVABLE_PROPERTIES.privileged.indexOf('dishwasher').should.not.eql(-1);
+        this.model.READABLE_PROPERTIES.privileged.indexOf('dishwasher').should.not.eql(-1);
         this.model.WRITABLE_PROPERTIES.privileged.indexOf('dishwasher').should.not.eql(-1);
         done();
       });

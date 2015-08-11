@@ -32,9 +32,9 @@ describe("queryset", function () {
       instance.initializeWith(properties || {});
     }
     model(ModelTest, 'model_tests');
-    ModelTest.observable(['foo', 'has_bar']);
+    ModelTest.readable(['foo', 'has_bar']);
     ModelTest.writable('foo');
-    ModelTest.memoized('getBar', 'BAR', function innerGetBar(options, done) {
+    ModelTest.memoizes('getBar', 'BAR', function innerGetBar(options, done) {
       var dfd = Q.defer();
       var val = Math.random();
       done(null, val);
