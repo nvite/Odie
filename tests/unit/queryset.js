@@ -71,6 +71,12 @@ describe("queryset", function () {
     });
   });
 
+  after(function (done) {
+    this.model.DB().dropDatabase(function (err) {
+      done(err);
+    });
+  });
+
   describe("monadic interface", function () {
     Object.keys(argmap).forEach(function (meth) {
       it("returns a queryset instance from " + meth, function (done) {

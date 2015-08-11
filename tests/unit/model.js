@@ -43,6 +43,12 @@ describe("model", function () {
     });
   });
 
+  after(function (done) {
+    this.model.DB().dropDatabase(function (err) {
+      done(err);
+    });
+  });
+
   describe("instance methods", function () {
     describe("getClassName", function () {
       it("reports its class name", function (done) {
