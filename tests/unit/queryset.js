@@ -310,6 +310,5 @@ describe("queryset", function () {
         });
       });
     });
-
   });
 });

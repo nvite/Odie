@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/nvite/odie.git"
   },
+  "publishConfig": {
+    "registry": "https://nvite.registry.nodejitsu.com/"
+  },
   "keywords": [
     "ODM",
     "ORM",
