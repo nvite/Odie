@@ -4,7 +4,9 @@
   "description": "A schemaless ODM for Node and MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R progress tests/unit/*.js"
+    "test": "mocha -R progress tests/unit/*.js",
+    "docs": "jsdoc -c jsdoc.conf.json -d ./docs && cd docs && python -m 'SimpleHTTPServer' ${PORT:-4000}",
+    "coverage": "cd coverage/lcov-report && python -m 'SimpleHTTPServer' ${PORT:-4000}"
   },
   "repository": {
     "type": "git",
