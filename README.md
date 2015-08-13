@@ -86,7 +86,7 @@ function ToDoList(attrs) {
   this.initializeWith(attrs);
 }
 
-module.exports = Model(ToDoList, 'to\_do\_lists');
+module.exports = Model(ToDoList, 'to_do_lists');
 ```
 
 You now have a full-fledged model, `ToDoList` which can interact with
@@ -726,7 +726,7 @@ fields should be present in the output. Defining readable contexts looks like th
 ```javascript
 ToDoList.readable(['name']) // the default has no context name
 ToDoList.readable('editor', ToDoList.READABLE_PROPERTIES.default.concat('items'));
-ToDoList.readable('owner', ToDoList.READABLE\_PROPERTIES.editor.concat(['sharing', 'created\_at', 'updated_at']));
+ToDoList.readable('owner', ToDoList.READABLE_PROPERTIES.editor.concat(['sharing', 'created_at', 'updated_at']));
 ```
 
 Once contexts are created, they can be used on format:
