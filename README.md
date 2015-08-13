@@ -61,7 +61,7 @@ as a developer know when you need consistency and when you don't, and you also d
 better than JSON fields when dealing with the parts that don't.
 
 Odie was extracted from just such an environment, designed to meet the data needs that were already
-established while not imposing rigidity where it wasn't called for. An odie model looks like JS code,
+established while not imposing rigidity where it wasn't called for. An Odie model looks like JS code,
 not a giant object of intermingled schema definitions and frameworky callback handlers. You get to
 impose your own domain rules on a model-by-model basis, and Odie handles things like finders,
 persistence, formatting and field cleanup for you.
