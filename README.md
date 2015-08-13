@@ -2,6 +2,8 @@
 
 A schemaless, context-oriented Object Document Mapper for Node.js and MongoDB
 
+---
+
 ## Rationale
 
 MongoDB is a schemaless, document-oriented database. It's great for prototyping
@@ -17,12 +19,14 @@ not a giant object of intermingled schema definitions and frameworky callback ha
 impose your own domain rules on a model-by-model basis, and Odie handles things like finders,
 persistence, formatting and field cleanup for you.
 
-## Getting Started
+---
+
+## Getting started
 
 Odie exposes its business logic via Model classes, which are prototypes decorated with
 Odie's sole export, `Model`.
 
-**Defining a model**
+### Defining a model
 
 Let's create a model, `ToDoList`. The definition at its most basic is almost too simple to be true:
 
@@ -39,7 +43,7 @@ module.exports = Model(ToDoList, 'to\_do\_lists');
 You now have a full-fledged model, `ToDoList` which can interact with
 the database collection 'to\_do\_lists' and do all the things a model should.
 
-**Creating an instance**
+### Creating an instance
 
 Instantiating is also as straightforward as you'd expect (and completely definable by you!).
 In this basic setup, we can create a new To Do List from a plain object:
@@ -72,12 +76,12 @@ myList.save()
 Persistence operations expose both a promise and callback interface, so you can
 handle responses as you prefer.
 
-**Connecting to a database**
+### Connecting to a database
 
 So where did your new ToDoList instance go? By default, the `connection` module will connect to `localhost` on the default port, and do its
 work in a database called `odie_test`. You can override this behavior in one of two ways:
 
-**Configuring a database**
+### Configuration
 
 The `Model` decorator exposes a configuration getter and setter, `configure` and `config`, respectively.
 To specify a database for a given model, you use code similar to the following:
@@ -109,7 +113,7 @@ Model.configure({
 Any keys/values in `options` will be converted to querystring params and appended to your URI at connection
 time. In this manner, config can be pulled directly in from a json file or `process.env`.
 
-**Sharing a DB connection**
+### Sharing a DB connection
 
 When grabbing a DB connection for IO, Odie will first check to see if `global.__odiedb__` is defined,
 and instantiate its own connection only if not found. So, to share a connection app-wide, or to use your
@@ -125,7 +129,7 @@ db.connect(function (err, conn) {
 
 And all of your models will then use `conn` instead of opening a DB connection.
 
-**Logging**
+### Logging
 
 By default, Odie will use `console` as its logger, but you can specify your own here, as well:
 
@@ -142,12 +146,16 @@ Your logger must be an instantiated object (not a prototype), and must respond t
  - error
  - log
 
+[Back to top](#)
+
+---
+
 ## Manipulating values
 
 Odie sandboxes its model state in such a way as to isolate it from other properties it may contain,
 which means that all persisted values are manipulated by `get` and `set` methods.
 
-**The basics**
+### Getters and setters
 
 You can get a value via `instance.get`:
 
@@ -168,8 +176,7 @@ You can retrieve the whole model's state by calling `instance.get` with no argum
 
 ```javascript
 myList.get();
-// =>
-// {
+// => {
 //   name: "My Awesome To-Do List",
 //   items: [
 //     { name: 'Write docs', completed: false },
@@ -181,9 +188,9 @@ myList.get();
 // }
 ```
 
-Note that timestamps were created automatically for us when we saved.
+**Note:** Timestamps were created automatically for us when we saved.
 
-**Deeply nested references**
+### Deep references
 
 It's possible to get and set values that we're not sure exist. Under the hood, Odie
 implements the null object pattern to prevent errors from being thrown where data doesn't
@@ -222,7 +229,7 @@ myList.get('sharing');
 This can be done to arbitrary depths, any path part along the way that's undefined will be initialized
 to an empty object (including numeric paths, be warned!).
 
-**Unsetting a value**
+### Unsetting a value
 
 Setting a value to undefined is insufficient to remove it from the database. When a value is to be removed,
 it should be `unset`:
@@ -231,7 +238,7 @@ it should be `unset`:
 myList.unset('sharing');
 ```
 
-**Reverting changes**
+### Reverting changes
 
 Pending changes can be thrown away via `reset`
 ```javascript
@@ -241,9 +248,12 @@ myList.get('unnecessary_data');
 // => undefined
 ```
 
-**Array operations**
+### Array operations
 
-To better handle arrays, there are specific methods available:
+To better handle arrays, there are specific methods available.
+
+**Note:** `Model.attributeError` will be thrown if array operations are applied
+to a non-array reference
 
 **Push**
 
@@ -294,9 +304,13 @@ myList.get('items');
 // ]
 ```
 
-## Saving to the DB
+[Back to top](#)
 
-**Dirty tracking**
+---
+
+## Persistence
+
+### Dirty tracking
 
 Odie keeps track of the fields that have changed as we manipulate our model. We
 can find out if a field has changed with the `isDirty` method:
@@ -321,7 +335,7 @@ myList.dirtyFields();
 Note that when only a single property nested within an object is changed, the field returned will be a
 dot-delimited path.
 
-**Writable fields**
+### Field whitelisting & contexts
 
 It's stated above that Odie is _context-oriented_. This derives from the idea that different users have different
 relationships to the data, and Odie lets you define those relationships as simple strings. Each _context_ can have
@@ -369,7 +383,8 @@ myList.save({ as: 'self' })
 Note that we provided an options object with `{as: 'self'}` to our save method. This
 tells the model to save using the 'self' context that we've defined with `ToDoList.writable`.
 
-**The default context**
+### The default context
+
 Now that there's a write context called 'self', calls to `save` with no `as` option
 will essentially be no-ops. We need a default context if we want to write fields without specifying
 who is doing the writing. We can do this by using `writable` without a string first argument:
@@ -392,7 +407,7 @@ ToDoList.writable('owner', ToDoList.READABLE_PROPERTIES.editors.concat('sharing'
 Now we have 3 contexts: the default, one called 'editor', and one called 'owner', each
 with more writable fields than the last.
 
-**Other field permissions**
+### Other contexts
 
 We have the same access to contexts when serializing a model for output, using a method called `readable`,
 which works in the same way.
@@ -401,7 +416,7 @@ There is also a shorthand for setting both `readable` and `writable` at once, ca
 
 More on field redaction for output can be found in the section 'Formatting output' below.
 
-**Partial object updates**
+### Partial edits
 
 Sometimes an application recieves a payload that contains a partial object which should be merged into
 a model rather than replace its content. To facilitate these types of updates, there is a method, `updateWith`
@@ -438,7 +453,7 @@ myList.updateWith({
 It's notable that this style of update uses `save` internally and will clean fields based
 on the permissions model you've defined.
 
-**Atomic updates**
+### Atomic operations
 
 Sometimes you want to just write to the database, and that's possible with an Odie model as well, using `directUpdate`.
 This method is good for atomic operations like `$inc`, and also when you just want to pass a `$set` or `$unset` straight through.
@@ -447,7 +462,9 @@ No call to `save` is made and no field cleaning or validation is done.
 If an object of properties is passed straight in (ie, no `$` operator),
 it will be wrapped in a `$set` operation.
 
-**Creating**
+### Creating a record
+
+**Create**
 
 `Model.create(props)` Can be used to initialize and persist a new model in
 one step, resolving with the instance.
@@ -486,20 +503,26 @@ ToDoList.getOrCreate({
 
 Just like `getOrCreate`, only without saving to the database.
 
-**Deleting**
+### Deleting a record
 
 A model can be removed from the database using the syntax `myList.destroy()`
 
-**Reloading**
+### Reloading from the database
 
 After a save is successful, the model is reloaded in-place, meaning the data you wrote to the db
 is now in the working copy. This is true for all persistence operations except `destroy`, meaning that
 after a `directUpdate` which calls `$inc` on a number, the new number will be present in the model's state
 after resolution. After a call to `destroy` the original object is left in the model's working copy.
 
-## Retrieving records
+You can reload an instance at any time via `instance.reload()`
 
-**Loading a single instance**
+[Back to top](#)
+
+---
+
+## Finders
+
+### Retrieving a single instance
 
 A single record can be retrieved via `Model.get`, providing either mongo criteria or an ObjectId-like string:
 
@@ -520,7 +543,7 @@ If more than one result is returned from `get`, an error of type
 
 `findOne` and `findById` are synonyms for `get`.
 
-**QuerySets**
+### Multiple instances & QuerySets
 
 Queries for multiple records return a QuerySet, a class which wraps a MongoDB cursor
 and automatically populates instances as the cursor yields data.
@@ -532,7 +555,7 @@ console.log(qs);
 // => <QuerySet: ToDoList>
 ```
 
-QuerySets support most of the MongoDB cursor spec, and are monadic (always return themselves),
+QuerySets support most of the MongoDB cursor spec, and always return themselves,
 so methods can be chained:
 
 ```javascript
@@ -544,6 +567,8 @@ qs.batchSize(2)
   .explain(console.log);
 ```
 
+### QuerySet methods delegated to the cursor
+
 The following methods are delegated straight to the MongoDB Cursor and can be understood via its [documentation](https://mongodb.github.io/node-mongodb-native/api-generated/cursor.html):
 - `hint` (where available)
 - `batchSize`
@@ -553,6 +578,8 @@ The following methods are delegated straight to the MongoDB Cursor and can be un
 - `count`
 - `rewind`
 - `explain`
+
+### QuerySet iterators
 
 Available iterators are:
 
@@ -629,13 +656,17 @@ qs.whileNext(function (err, result){
 // => Done!
 ```
 
+[Back to top](#)
+
+---
+
 ## Formatting output
 
 Each model exposes a `format` method, for converting its internal state to a plain JS object
 for interoperability with other systems. Think of `format` as the external representation of your model
 from an end-user's perspective--it returns the value an API might return, for example.
 
-**Readable fields**
+### Readable contexts
 
 The default behavior of `format` is to just return the current state, the same way `instance.get()` would,
 but Odie also supports 'readable contexts', the same way it does for persistence.
@@ -664,6 +695,10 @@ myList.format({as: 'editor'});
 // }
 ```
 
+[Back to top](#)
+
+---
+
 ## Overriding methods
 
 Readable properties go a long way toward customizing the serialization output of a model, but sometimes
@@ -671,7 +706,7 @@ internal storage and external representation don't match up at all. Likewise, pr
 are common requirements of any database abstraction layer. To achieve this level of customization, Odie
 allows any stock method to be overridden.
 
-**Redefinition**
+### By redefinition
 
 Any method can be redefined by a model, after applying the `Model` decorator--just redefine it in the prototype:
 
@@ -688,9 +723,9 @@ ToDoList.prototype.save(options) {
 
 This skips the builtin `save` entirely, so you're responsible for everything.
 
-**Wrapping**
+### By `overrides`
 
-Odie provides a higher-order method, `overrides`, to facilitate wrapping a builtin method. The signature looks like
+Odie also provides a higher-order method, `overrides`, to facilitate wrapping a builtin method. The signature looks like
 `(methodName, implementation)` where `methodName` is the string name to override, and `implementation`
 is a function that receives the original method, and returns a function with the same signature
 as the original method.
@@ -699,12 +734,16 @@ A trivial example of overriding `save`:
 
 ```javascript
 ToDoList.overrides('save', function overrideSave (super) {
+
   return function customSave (options) {
     console.log('About to save ToDoList with id:', this.get('_id'));
+
     return super(options)
+      
       .then(function (id) {
         console.log('Succesfully saved ToDoList with id:', this.get('_id'));
       }.bind(this))
+      
       .catch(function (err){
         console.log('Failed to save ToDoList with id:', this.get('_id'), 'Error:', err);
       }.bind(this));
@@ -715,15 +754,22 @@ ToDoList.overrides('save', function overrideSave (super) {
 Now, when you call `save`, your implementation will be used while still delegating to
 the builtin at the designated point. Any model method can be overridden in this fashion.
 
-## Memoizing asynchronous calls
+[Back to top](#)
 
-Sometimes models rely on expensive-to-compute or remote data which should only
-be called once and then memoized for later. Odie provides mechanisms for defining--and
+---
+
+## Memoization
+
+Sometimes models must rely on expensive-to-compute or remote data which should only
+be retrieved once and then saved for later. Odie provides mechanisms for defining--and
 preloading at the QuerySet level--these kinds of data. To implement a memoizer, use the
 higher-order method `memoizes`, with the signature `(getterName, memoizedName, implementation)`
 where `getterName` is the function to be added to the model's prototype, memoizedName is an all-caps
 attribute to store the data on the model (separate from the model's state data), and implementation
 is a getter that returns a promise for the data to be assigned into `instance.memoizedName`.
+
+Memoized methods always return a promise, but the property the data are stored on
+can be accessed directly to return results in the current tick.
 
 A trivial example of memoizing a remote data call:
 
@@ -743,7 +789,7 @@ ToDoList.memoizes('getRemoteThing', 'REMOTE_THING', function innerGetRemoteThing
 });
 ```
 
-This adds a method, `getRemoteThing` to your model's prototype which will call the remote data once
+This adds a method, `getRemoteThing` to our model's prototype which will call the remote data once
 and store it for immediate retrieval on subsequent calls:
 
 ```javascript
@@ -755,9 +801,13 @@ console.log(myList.__REMOTE_THING__);
 // => { result: 'some data' }
 ```
 
-Any memoized method can be forced to re-fetch its data by providing an object, `{force: true}` to the getter.
+**Note:** Double underscores are prepended and appended and the given
+attribute name is uppercased automatically.
 
-**Preloading memoized getters from a QuerySet**
+Any memoized method can be forced to re-fetch its data by providing an
+object, `{force: true}` to the getter.
+
+### Preloading memoized getters from a QuerySet
 
 It can be useful to preload memoized data at the QuerySet level to ensure that every instance
 that gets iterated on has memoized values all ready to go:
@@ -773,10 +823,26 @@ ToDoList
 // => { result: 'some_data' }
 ```
 
-**Relations**
+### Preloading memoized getters from a single-record `get`
 
-This idea combined with an overridden `format`
-method can be used to eagerly fetch and inline relationships or remote data on a document. Relation support is 
+A `preload` option can also be given to `Model.get` to preload memoized methods:
+
+```javascript
+ToDoList.get({_id: someObjectId}, {preload: ['getRemoteThing', 'someOtherThing']})
+  .then(function (list) {
+    console.log(list.__REMOTE_THING__);
+  });
+// => { result: 'some_data' }
+```
+
+[Back to top](#)
+
+---
+
+## Relations
+
+The idea of memoized getters combined with an overridden `format`
+method can be used to eagerly fetch and inline relationships or remote data on a document. Proper relation support is 
 still experimental and a formal API around it will materialize as use patterns are understood, but for the time
 being, it's still doable somewhat manually. Here's a naïve example impementation:
 
@@ -862,6 +928,10 @@ Q.all([
 // }
 ```
 
+[Back to top](#)
+
+---
+
 ## That's it!
 
-Questions and issues can be directed to the Github repo: https://github.com/nvite/odie/issues
+Questions and issues can be directed to the Github repo: <https://github.com/nvite/odie/issues>
