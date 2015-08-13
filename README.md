@@ -66,6 +66,8 @@ not a giant object of intermingled schema definitions and frameworky callback ha
 impose your own domain rules on a model-by-model basis, and Odie handles things like finders,
 persistence, formatting and field cleanup for you.
 
+[Back to top](#)
+
 ---
 
 ## Getting started
@@ -982,3 +984,5 @@ Q.all([
 ## That's it!
 
 Questions and issues can be directed to the Github repo: <https://github.com/nvite/odie/issues>
+
+[Back to top](#)
