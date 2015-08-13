@@ -241,10 +241,10 @@ myList.get();
 
 ### Deep references
 
-It's possible to get and set values that we're not sure exist. Under the hood, Odie
-implements the null object pattern to prevent errors from being thrown where data doesn't
-exist (after all, this is a schemaless ODM!). To get a value nested deeply within a model,
-we can ask for it with a dot-delimited path:
+It's possible to get and set values that we're not sure exist. Because getters operate on
+strings, Odie can emulate a null object to prevent errors from being thrown
+where data doesn't exist (after all, this is a schemaless ODM!). To get a
+value nested deeply within a model, we can ask for it with a dot-delimited path:
 
 ```javascript
 myList.get('items.0.name');
@@ -258,9 +258,16 @@ Two things to note here:
 - We can index into an array via numeric property names, and
 - We get back undefined no matter where the undefined value first occurs in the path we've requested.
 
-It's probably also worth noting that while this is fine for setting the value of an array index
-that exists, there are better ways to _add_ to an array than by numeric address, which we'll
-get into shortly.
+We can also specify a default value for `instance.get` to return instead of `undefined`:
+
+```javascript
+myList.get('sharing.access', 'nobody');
+// => nobody
+```
+
+It's probably also worth noting that while this is fine for any `get` calls,
+as well as setting the value of an array index that exists, there are
+better ways to _add_ to an array than by numeric address, which we'll get into shortly.
 
 We can, however, set a value to a path within an object that doesn't exist:
 
