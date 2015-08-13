@@ -268,8 +268,7 @@ We can, however, set a value to a path within an object that doesn't exist:
 myList.set('sharing.url', 'https://example.com/my-list');
 myList.set('sharing.access', 'friends');
 myList.get('sharing');
-// => 
-// {
+// => {
 //   url: "https://example.com/my-list",
 //   access: "friends"
 // }
@@ -416,8 +415,7 @@ myList.save({ as: 'self' })
     console.log(myList.get())
   });
 // => Setting a value for `sharing` is disallowed, rolling it back.
-// => 
-// {
+// => {
 //   name: "My Awesome To-Do List",
 //   items: [
 //     { name: 'Write docs', completed: false },
@@ -482,8 +480,7 @@ myList.updateWith({
   .then(function () {
     console.log(myList.get())
   });
-// => 
-// {
+// => {
 //   name: "My Awesome To-Do List",
 //   items: [
 //     { name: 'Write docs', completed: false },
