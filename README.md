@@ -6,45 +6,45 @@ A schemaless, context-oriented Object Document Mapper for Node.js and MongoDB
 
 <!-- MarkdownTOC -->
 
-- [Rationale][rationale]
-- [Getting started][getting-started]
-  - [Defining a model][defining-a-model]
-  - [Creating an instance][creating-an-instance]
-  - [Connecting to a database][connecting-to-a-database]
-  - [Configuration][configuration]
-  - [Sharing a DB connection][sharing-a-db-connection]
-  - [Logging][logging]
-- [Manipulating values][manipulating-values]
-  - [Getters and setters][getters-and-setters]
-  - [Deep references][deep-references]
-  - [Unsetting a value][unsetting-a-value]
-  - [Reverting changes][reverting-changes]
-  - [Array operations][array-operations]
-- [Persistence][persistence]
-  - [Dirty tracking][dirty-tracking]
-  - [Field whitelisting & contexts][field-whitelisting--contexts]
-  - [The default context][the-default-context]
-  - [Other contexts][other-contexts]
-  - [Partial edits][partial-edits]
-  - [Atomic operations][atomic-operations]
-  - [Creating a record][creating-a-record]
-  - [Deleting a record][deleting-a-record]
-  - [Reloading from the database][reloading-from-the-database]
-- [Finders][finders]
-  - [Retrieving a single instance][retrieving-a-single-instance]
-  - [Multiple instances & QuerySets][multiple-instances--querysets]
-  - [QuerySet methods delegated to the cursor][queryset-methods-delegated-to-the-cursor]
-  - [QuerySet iterators][queryset-iterators]
-- [Formatting output][formatting-output]
-  - [Readable contexts][readable-contexts]
-- [Overriding methods][overriding-methods]
-  - [By redefinition][by-redefinition]
-  - [By `overrides`][by-overrides]
-- [Memoization][memoization]
-  - [Preloading memoized getters from a QuerySet][preloading-memoized-getters-from-a-queryset]
-  - [Preloading memoized getters from a single-record `get`][preloading-memoized-getters-from-a-single-record-get]
-- [Relations][relations]
-- [That's it!][thats-it]
+- [Rationale](#rationale)
+- [Getting started](#getting-started)
+  - [Defining a model](#defining-a-model)
+  - [Creating an instance](#creating-an-instance)
+  - [Connecting to a database](#connecting-to-a-database)
+  - [Configuration](#configuration)
+  - [Sharing a DB connection](#sharing-a-db-connection)
+  - [Logging](#logging)
+- [Manipulating values](#manipulating-values)
+  - [Getters and setters](#getters-and-setters)
+  - [Deep references](#deep-references)
+  - [Unsetting a value](#unsetting-a-value)
+  - [Reverting changes](#reverting-changes)
+  - [Array operations](#array-operations)
+- [Persistence](#persistence)
+  - [Dirty tracking](#dirty-tracking)
+  - [Field whitelisting & contexts](#field-whitelisting--contexts)
+  - [The default context](#the-default-context)
+  - [Other contexts](#other-contexts)
+  - [Partial edits](#partial-edits)
+  - [Atomic operations](#atomic-operations)
+  - [Creating a record](#creating-a-record)
+  - [Deleting a record](#deleting-a-record)
+  - [Reloading from the database](#reloading-from-the-database)
+- [Finders](#finders)
+  - [Retrieving a single instance](#retrieving-a-single-instance)
+  - [Multiple instances & QuerySets](#multiple-instances--querysets)
+  - [QuerySet methods delegated to the cursor](#queryset-methods-delegated-to-the-cursor)
+  - [QuerySet iterators](#queryset-iterators)
+- [Formatting output](#formatting-output)
+  - [Readable contexts](#readable-contexts)
+- [Overriding methods](#overriding-methods)
+  - [By redefinition](#by-redefinition)
+  - [By `overrides`](#by-overrides)
+- [Memoization](#memoization)
+  - [Preloading memoized getters from a QuerySet](#preloading-memoized-getters-from-a-queryset)
+  - [Preloading memoized getters from a single-record `get`](#preloading-memoized-getters-from-a-single-record-get)
+- [Relations](#relations)
+- [That's it!](#thats-it)
 
 <!-- /MarkdownTOC -->
 
