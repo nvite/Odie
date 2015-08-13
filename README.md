@@ -780,7 +780,7 @@ function ToDoList (props) {
 }
 Model(ToDoList);
 
-ToDoList.prototype.save(options) {
+ToDoList.prototype.save = function (options) {
   // your custom save method here
 }
 ```
