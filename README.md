@@ -114,12 +114,13 @@ populated with our passed-in attributes at our disposal. To persist it, we can j
 
 ```javascript
 myList.save()
-  .then(function(instance) {
-    console.log('It has an ID now!', instance.get('_id'))
+  .then(function(id) {
+    console.log('It has an ID now!', id)
   })
   .catch(function (err) {
     console.error('Whoops', err);
   });
+// => It has an ID now! 000000000000000000000000
 ```
 
 Persistence operations expose both a promise and callback interface, so you can
@@ -141,7 +142,7 @@ Model.configure('uri', 'mongodb://example.com/todo_app?ssl=true');
 
 // define a model...
 
-module.exports = Model(ToDoList);
+module.exports = Model(ToDoList, 'to_do_lists');
 ```
 
 Under the hood, Odie uses a `MongoClient` instance to connect to MongoDB, so the
@@ -226,6 +227,7 @@ You can retrieve the whole model's state by calling `instance.get` with no argum
 ```javascript
 myList.get();
 // => {
+//   _id: 000000000000000000000000
 //   name: "My Awesome To-Do List",
 //   items: [
 //     { name: 'Write docs', completed: false },
@@ -233,7 +235,6 @@ myList.get();
 //   ]},
 //   created_at: Wed Aug 12 2015 10:12:00 GMT-0400 (EDT),
 //   updated_at: Wed Aug 12 2015 10:12:00 GMT-0400 (EDT),
-//   _id: 000000000000000000000000
 // }
 ```
 
@@ -262,7 +263,7 @@ We can also specify a default value for `instance.get` to return instead of `und
 
 ```javascript
 myList.get('sharing.access', 'nobody');
-// => nobody
+// => "nobody"
 ```
 
 It's probably also worth noting that while this is fine for any `get` calls,
@@ -299,6 +300,14 @@ Pending changes can be thrown away via `reset`
 ```javascript
 myList.set('unnecessary_data', 'blah');
 myList.reset();
+myList.get('unnecessary_data');
+// => undefined
+```
+
+A path can be optionally provided to only reset a single value.
+```javascript
+myList.set('unnecessary_data', 'blah');
+myList.reset('unnecessary_data');
 myList.get('unnecessary_data');
 // => undefined
 ```
@@ -387,8 +396,8 @@ myList.dirtyFields();
 // => ["name", "items"];
 ```
 
-Note that when only a single property nested within an object is changed, the field returned will be a
-dot-delimited path.
+**Note:** When properties nested within an object are changed, the fields returned will be
+dot-delimited paths.
 
 ### Field whitelisting & contexts
 
@@ -454,11 +463,11 @@ accessed directly allowing contexts to be built up with permission levels:
 
 ```javascript
 ToDoList.writable(['name']);
-ToDoList.writable('editor', ToDoList.READABLE_PROPERTIES.default.concat('items'));
-ToDoList.writable('owner', ToDoList.READABLE_PROPERTIES.editors.concat('sharing'));
+ToDoList.writable('editor', ToDoList.WRITABLE_PROPERTIES.default.concat('items'));
+ToDoList.writable('owner', ToDoList.WRITABLE_PROPERTIES.editor.concat('sharing'));
 ```
 
-Now we have 3 contexts: the default, one called 'editor', and one called 'owner', each
+Here we have defined 3 contexts: the default, one called 'editor', and one called 'owner', each
 with more writable fields than the last.
 
 ### Other contexts
@@ -488,6 +497,7 @@ myList.updateWith({
     console.log(myList.get())
   });
 // => {
+//   _id: 000000000000000000000000
 //   name: "My Awesome To-Do List",
 //   items: [
 //     { name: 'Write docs', completed: false },
@@ -499,7 +509,6 @@ myList.updateWith({
 //   }
 //   created_at: Wed Aug 12 2015 10:12:00 GMT-0400 (EDT),
 //   updated_at: Wed Aug 12 2015 10:12:00 GMT-0400 (EDT),
-//   _id: 000000000000000000000000
 // }
 ```
 
@@ -526,7 +535,7 @@ one step, resolving with the instance.
 ToDoList.create({
   name: "My Other List",
   items: []
-}).then(console.log);
+}, { as: 'owner' }).then(console.log);
 // => <ToDoList: 000000000000000000000001>
 ```
 By the way, the console representation of our ToDoList instance above
@@ -543,6 +552,7 @@ create a new instance with.
 ToDoList.getOrCreate({
   name: "My Awesome To-Do List"
 }, {
+  as: 'owner',
   defaults: {
     name: "My Awesome To-Do List",
     items: []
@@ -550,6 +560,7 @@ ToDoList.getOrCreate({
 })
 .then(console.log);
 // => <ToDoList: 000000000000000000000000>
+// (Note our original instance was returned)
 ```
 
 **getOrInitialize**
@@ -614,7 +625,7 @@ so methods can be chained:
 ```javascript
 qs.batchSize(2)
   .limit(10)
-  .sort({created_at: desc})
+  .sort({created_at: -1})
   .count(console.log)
   .rewind()
   .explain(console.log);
@@ -681,7 +692,7 @@ A second parameter, `formatOptions` will be passed straight through to each `for
 qs.toJSON(function (err, results) {
   console.log(results);
 }, {as: 'owner'});
-// => [{ name: "My Awesome To-Do List", items: [...}]
+// => [{ name: "My Awesome To-Do List", items: ...}]
 ```
 
 **next**
@@ -700,7 +711,7 @@ Takes two callbacks. Performs a while loop, yielding instances to the first as l
 and calls the second on completion, or with an error if encountered.
 
 ```javascript
-qs.whileNext(function (err, result){
+qs.whileNext(function (result){
   console.log(result);
 }, function (err) {
   console.log('Done!');
