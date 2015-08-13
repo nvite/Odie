@@ -164,7 +164,7 @@ time. In this manner, config can be pulled directly in from a json file or `proc
 
 ### Sharing a DB connection
 
-When grabbing a DB connection for IO, Odie will first check to see if `global.__odiedb__` is defined,
+When grabbing a DB connection Odie will first check to see if `global.__odiedb__` is defined,
 and instantiate its own connection only if not found. So, to share a connection app-wide, or to use your
 own MongoDB connection, you could do something like this:
 
