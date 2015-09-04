@@ -55,14 +55,12 @@ describe("queryset", function () {
     };
     this.model = ModelTest;
     this.seeds = 40;
-    this.model.DB.promise.then(function (db) {
-      async.times(this.seeds, function (i, next) {
-        ModelTest.create({foo: i}, {safe: true}, next);
-      }, function (err, instances) {
-        this.subject = this.model.all();
-        done(err);
-      }.bind(this));
-    }.bind(this)).catch(done);
+    async.times(this.seeds, function (i, next) {
+      ModelTest.create({foo: i}, {safe: true}, next);
+    }, function (err, instances) {
+      this.subject = this.model.all();
+      done(err);
+    }.bind(this));
   });
 
   afterEach(function (done) {
