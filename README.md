@@ -133,8 +133,8 @@ work in a database called `odie_test`. You can override this behavior in one of 
 
 ### Configuration
 
-The `Model` decorator exposes a configuration getter and setter, `configure` and `config`, respectively.
-To specify a database for a given model, you use code similar to the following:
+The `Model` decorator exposes a configuration getter and setter, `config` and `configure`, respectively.
+To specify a database for a given model, you'd use code similar to the following:
 
 ```javascript
 var Model = require('odie');
