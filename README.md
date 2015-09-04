@@ -2,6 +2,8 @@
 
 A schemaless, context-oriented Object Document Mapper for Node.js and MongoDB
 
+[![Build status on Travis-CI](https://travis-ci.org/nvite/Odie.svg)](https://travis-ci.org/nvite/Odie)
+
 ## Table of contents
 
 <!-- MarkdownTOC -->
